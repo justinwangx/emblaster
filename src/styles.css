@@ -1,0 +1,130 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "EB Garamond", Garamond, "Times New Roman", Times, serif;
+  cursor: crosshair;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#score {
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}
+
+#level-number {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+}
+
+#leaderboard-link {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+#game {
+  height: 70%;
+  width: 65%;
+  max-height: 800px;
+  max-width: 1200px;
+  position: relative;
+  z-index: -2;
+}
+
+#gun {
+  height: 60px;
+  width: 40px;
+  background-image: url(/assets/quill.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  bottom: 15px;
+  left: calc(50% - 15px);
+  z-index: -1;
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+
+.bullet {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: black;
+  border-radius: 50%;
+}
+
+.danger-line {
+  height: 2px;
+  width: 100%;
+  background-color: black;
+  position: absolute;
+  bottom: 20px;
+}
+
+.falling-word {
+  height: 35px;
+  width: 35px;
+  position: absolute;
+  z-index: 0;
+  user-select: none;
+}
+
+#game-over {
+  position: absolute;
+  color: white;
+  bottom: 10px;
+}
+
+a {
+  color: black;
+  opacity: 50%;
+  text-decoration: none;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: none;
+  z-index: 1;
+  overflow: auto;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content p {
+  margin-bottom: 3px;
+}
+
+.name-input {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid black;
+  outline: none;
+  color: black;
+  width: 30%;
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>emblaster</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  </head>
+  <body>
+    <div id="score">Score: 0</div>
+    <div id="level-number">Level</div>
+    <div id="leaderboard-link"><a href="/leaderboard">leaderboard</a></div>
+    <div id="game">
+      <div class="words"></div>
+      <div class="danger-line"></div>
+      <div id="gun"></div>
+    </div>
+    <div id="game-over">Game Over</div>
+    <div id="name-input-modal" class="modal">
+      <div class="modal-content">
+        <p>you made the leaderboard - enter your name below</p>
+        <input type="text" id="name-input" />
+      </div>
+    </div>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

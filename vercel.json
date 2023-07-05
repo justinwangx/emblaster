@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/assets/(.*)", "destination": "/src/assets/$1" },
+    { "source": "/(.*)", "destination": "/src/$1" }
+  ],
+  "cleanUrls": true
+}

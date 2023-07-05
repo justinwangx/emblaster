@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "mongodb": "^5.5.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "node-fetch": "^2.6.11"
+  }
+}
