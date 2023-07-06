@@ -1,5 +1,4 @@
 const { MongoClient } = require('mongodb');
-// require('dotenv').config();
 
 module.exports = async (req, res) => {
     let client;
