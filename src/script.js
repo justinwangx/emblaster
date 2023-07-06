@@ -100,16 +100,17 @@ function gameOverSequence() {
     );
     console.log("leaderboard updated")
   }
+
   gameOverElement.style.color = gameOverColor;
   dangerLine.style.opacity = "0%";
   document.removeEventListener("click", shootBullet);
 
+  // Allow user to input new score
   if (score > scoreToBeat && !leaderboardUpdated) {
     const modal = document.getElementById("name-input-modal");
     modal.style.display = "block";
 
     const nameInput = document.getElementById("name-input");
-
     nameInput.addEventListener("input", () => {
       nameInput.value = nameInput.value
         .replace(/[^a-zA-Z]/g, "")
@@ -133,7 +134,6 @@ function gameOverSequence() {
       }
     });
   }
-
   return;
 }
 
