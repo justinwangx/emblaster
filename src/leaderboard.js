@@ -31,6 +31,15 @@ loading.textContent = "loading...";
 loading.className = "loading";
 leaderboardList.append(loading);
 
+// Populate leaderboardList with fake hidden entries so size of border stays similar (jank)
+for (let i=0; i<13; i++) {
+  var dummyElement = document.createElement("div");
+  dummyElement.textContent = "loading...";
+  dummyElement.className = "loading";
+  dummyElement.style.color = "white";
+  leaderboardList.append(dummyElement);
+}
+
 window.onload = function () {
   let leaderboardData = sessionStorage.getItem("leaderboardData");
   if (leaderboardData) {
