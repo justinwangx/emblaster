@@ -1,5 +1,6 @@
-
 import { fetchAndCacheLeaderboard, postScore } from "./helpers.js";
+
+// Level score update functions and level configs
 
 const tliatiUpdate = (score) => score + Math.floor(Math.random() * 10 + 1);
 const malUpdate = (score) => score + Math.floor(Math.random() * 70 + 1);
@@ -30,6 +31,8 @@ const levels = [
   },
 ];
 
+// Initial variable settings and DOM elements
+
 let score = 0;
 let scoreToBeat = 1000;
 let gameOver = false;
@@ -37,15 +40,17 @@ let leaderboardUpdated = false;
 let poem = [];
 let currentWordIndex = 0;
 let currentGunAngle = 0;
+let lastShotTime = 0;
 let bullets = [];
 let gameOverColor = "#800000";
 let wordSpawnTimeout;
 let levelConfig;
 
-const baseBulletVelocity = 2;
-const baseBulletMoveRate = 5;
-const baseWordPixelMove = 0.25;
-const baseWordMoveRate = 5;
+const baseBulletVelocity = 1.5;
+const baseBulletMoveRate = 3;
+const baseWordPixelMove = 0.125;
+const baseWordMoveRate = 3;
+const shotDelay = 150; // ms
 
 const game = document.getElementById("game");
 const words = document.querySelector(".words");
@@ -56,14 +61,32 @@ const dangerLine = document.querySelector(".danger-line");
 const gameOverElement = document.getElementById("game-over");
 const leaderboardLink = document.getElementById("leaderboard-link");
 
-let gunLeft = parseInt(window.getComputedStyle(gun).getPropertyValue("left"));
 let gunBottom = parseInt(
   window.getComputedStyle(gun).getPropertyValue("bottom")
 );
 
+// Game functions
+
+function molochLevelUpdate() {
+  if (currentWordIndex > poem.length - 100) {
+    document.removeEventListener("click", shootBullet);
+  } else if (currentWordIndex > poem.length / 2) {
+    levelConfig.spawnRate -= 10;
+    levelConfig.fallSpeedMultiplier += 0.1;
+  } else if (currentWordIndex > poem.length / 3) {
+    levelConfig.spawnRate -= 3;
+    levelConfig.fallSpeedMultiplier += 0.01;
+  } else if (currentWordIndex > 10) {
+    levelConfig.spawnRate -= 1;
+    levelConfig.fallSpeedMultiplier += 0.001;
+  }
+}
+
 function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
+
+// Define end of game behavior
 
 function gameOverSequence() {
   async function updateLeaderboard(name) {
@@ -114,11 +137,12 @@ function gameOverSequence() {
   return;
 }
 
+// Gun functions
+
 function rotateGun(event) {
   const gunRect = gun.getBoundingClientRect();
   const gunX = gunRect.left + gunRect.width / 2;
   const gunY = gunRect.top + gunRect.height / 2;
-
   const mouseX = event.clientX;
   const mouseY = event.clientY;
 
@@ -140,6 +164,14 @@ function rotateGun(event) {
 }
 
 function shootBullet(event) {
+  // Return based on shot delay
+  const currentTime = Date.now();
+  const timeSinceLastShot = currentTime - lastShotTime;
+  if (timeSinceLastShot < shotDelay) {
+    return;
+  }
+  lastShotTime = currentTime;
+
   const bullet = document.createElement("div");
   bullet.classList.add("bullet");
   bullets.push(bullet);
@@ -154,7 +186,7 @@ function shootBullet(event) {
   game.appendChild(bullet);
 
   // Create and play the shot sound.
-  let shotSound = new Audio("../assets/shot.mp3");
+  let shotSound = new Audio("assets/shot.mp3");
   shotSound.play();
 
   // Calculate the velocity of the bullet based on the gun's angle.
@@ -185,18 +217,31 @@ function shootBullet(event) {
   const moveBulletInterval = setInterval(moveBullet, baseBulletMoveRate);
 }
 
-function checkWordsOnScreen() {
-  let wordsOnScreen = document.getElementsByClassName("falling-word");
-  return wordsOnScreen.length == 0;
+// Word functions
+
+function noWordsLeft() {
+  let fallingWords = document.getElementsByClassName("falling-word");
+  return fallingWords.length == 0;
+}
+
+function createWord() {
+  let word = document.createElement("div");
+  word.textContent = poem[currentWordIndex++];
+  word.setAttribute("class", "falling-word");
+  words.appendChild(word);
+  word.style.bottom = game.offsetHeight + "px";
+  word.style.left = Math.floor(Math.random() * (game.offsetWidth - 10)) + "px";
+  return word;
 }
 
 function spawnWord(resolve) {
-  // Check for end of game
+  // Check for end of level
   if (currentWordIndex >= poem.length) {
     console.log("End of poem reached");
+    clearTimeout(wordSpawnTimeout);
     let checkInterval = setInterval(() => {
-      if (checkWordsOnScreen()) {
-        console.log("All words cleared from screen");
+      if (noWordsLeft()) {
+        console.log("Level finished.");
         clearInterval(checkInterval);
         resolve();
       }
@@ -206,32 +251,12 @@ function spawnWord(resolve) {
 
   // Adjustments for Moloch level
   if (levelConfig.number == 3) {
-    if (currentWordIndex > poem.length - 15) {
-      document.removeEventListener("click", shootBullet);
-    } else if (currentWordIndex > poem.length / 2) {
-      levelConfig.spawnRate = 1500;
-      levelConfig.fallSpeedMultiplier = 2;
-    } else if (currentWordIndex > poem.length / 3) {
-      levelConfig.spawnRate = 1000;
-      levelConfig.fallSpeedMultiplier = 1.5;
-    } else if (currentWordIndex > 10) {
-      levelConfig.spawnRate = 1750;
-      levelConfig.fallSpeedMultiplier = 1.3;
-    }
+    molochLevelUpdate();
   }
 
-  let word = document.createElement("div");
-  word.textContent = poem[currentWordIndex++];
-  word.setAttribute("class", "falling-word");
-  words.appendChild(word);
-  word.style.bottom = game.offsetHeight + "px";
-  word.style.left = Math.floor(Math.random() * (game.offsetWidth - 10)) + "px";
-
+  let word = createWord();
   startWordFall(word, resolve);
-  wordSpawnTimeout = setTimeout(
-    () => spawnWord(resolve),
-    levelConfig.spawnRate
-  ); 
+  wordSpawnTimeout = setTimeout(() => spawnWord(resolve), levelConfig.spawnRate);
 }
 
 function startWordFall(word, resolve) {
@@ -287,6 +312,8 @@ function startWordFall(word, resolve) {
   );
 }
 
+// Levels + Game
+
 function startLevel(levelConfig) {
   return new Promise((resolve, reject) => {
     fetch("poems/" + levelConfig.poem)
@@ -294,7 +321,7 @@ function startLevel(levelConfig) {
       .then((words) => {
         poem = words;
         currentWordIndex = 0;
-        // Start the first word falling
+        // Start the first word falling - pass resolve so it can be called after level completion
         spawnWord(resolve);
       })
       .catch((error) => reject(error));
@@ -305,12 +332,13 @@ async function runGame() {
   document.addEventListener("click", shootBullet);
   document.addEventListener("mousemove", rotateGun);
 
+  // Set scoreToBeat from leaderboard
   let leaderboardData = sessionStorage.getItem("leaderboardData");
   if (!leaderboardData) {
     try {
       leaderboardData = await fetchAndCacheLeaderboard();
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error: ", error);
     }
   }
   scoreToBeat = leaderboardData[leaderboardData.length - 1].score;
@@ -319,7 +347,7 @@ async function runGame() {
     levelConfig = cfg;
     levelElement.textContent = `Level ${levelConfig.number} of ${levels.length}`;
     await startLevel(levelConfig);
-    await delay(4000);
+    await delay(3000);
   }
 }
 

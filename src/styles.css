@@ -43,7 +43,7 @@ body {
 #gun {
   height: 60px;
   width: 40px;
-  background-image: url(/assets/quill.png);
+  background-image: url(assets/quill.png);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
