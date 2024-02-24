@@ -237,14 +237,33 @@ function startLevel(levelConfig) {
 async function runGame() {
   document.addEventListener("click", shootBullet);
   document.addEventListener("mousemove", rotateGun);
-  console.log("Running game")
+  console.log("Running game");
 
-  for (let cfg of levels) {
-    levelConfig = cfg;
-    console.log("Starting level")
-    await startLevel(levelConfig);
-    await delay(3000);
+  // Only run the Dickinson poem
+  levelConfig = levels[0];
+
+  // Loop indefinitely until gameOver is true
+  while (!gameOver) {
+    console.log("Starting level");
+
+    // Reset game state for a new run
+    currentWordIndex = 0;
+    bullets = [];
+    // Clear any words that are still falling
+    document.querySelectorAll('.falling-word').forEach(element => element.remove());
+
+    await startLevel(levelConfig).catch((error) => {
+      console.error("Failed to start level:", error);
+      gameOver = true; // Ensure game over if there's an error
+    });
+
+    // Wait a bit before restarting the level (if the game is not over)
+    if (!gameOver) {
+      await delay(3000);
+    }
   }
+
+  console.log("Game Over");
 }
 
 runGame();
