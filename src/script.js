@@ -1,42 +1,15 @@
-import { fetchAndCacheLeaderboard, postScore } from "./helpers.js";
-
-// Level score update functions and level configs
-
-const tliatiUpdate = (score) => score + Math.floor(Math.random() * 10 + 1);
-const malUpdate = (score) => score + Math.floor(Math.random() * 70 + 1);
-const hiiUpdate = (score) =>
-  Math.random() > 0.5 ? score + 1 : score - Math.floor(Math.random() * 30);
-
 const levels = [
   {
     number: 1,
     poem: "that-love-is-all-there-is.json",
     spawnRate: 3000,
     fallSpeedMultiplier: 1,
-    scoreUpdate: tliatiUpdate,
-  },
-  {
-    number: 2,
-    poem: "meditation-at-lagunitas.json",
-    spawnRate: 2500,
-    fallSpeedMultiplier: 1,
-    scoreUpdate: malUpdate,
-  },
-  {
-    number: 3,
-    poem: "howl-ii.json",
-    spawnRate: 2000,
-    fallSpeedMultiplier: 1.2,
-    scoreUpdate: hiiUpdate,
   },
 ];
 
 // Initial variable settings and DOM elements
 
-let score = 0;
-let scoreToBeat = 1000;
 let gameOver = false;
-let leaderboardUpdated = false;
 let poem = [];
 let currentWordIndex = 0;
 let currentGunAngle = 0;
@@ -55,32 +28,14 @@ const shotDelay = 150; // ms
 const game = document.getElementById("game");
 const words = document.querySelector(".words");
 const gun = document.getElementById("gun");
-const scoreElement = document.getElementById("score");
-const levelElement = document.getElementById("level-number");
 const dangerLine = document.querySelector(".danger-line");
 const gameOverElement = document.getElementById("game-over");
-const leaderboardLink = document.getElementById("leaderboard-link");
 
 let gunBottom = parseInt(
   window.getComputedStyle(gun).getPropertyValue("bottom")
 );
 
 // Game functions
-
-function molochLevelUpdate() {
-  if (currentWordIndex > poem.length - 100) {
-    document.removeEventListener("click", shootBullet);
-  } else if (currentWordIndex > poem.length / 2) {
-    levelConfig.spawnRate -= 10;
-    levelConfig.fallSpeedMultiplier += 0.1;
-  } else if (currentWordIndex > poem.length / 3) {
-    levelConfig.spawnRate -= 3;
-    levelConfig.fallSpeedMultiplier += 0.01;
-  } else if (currentWordIndex > 10) {
-    levelConfig.spawnRate -= 1;
-    levelConfig.fallSpeedMultiplier += 0.001;
-  }
-}
 
 function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -89,51 +44,9 @@ function delay(time) {
 // Define end of game behavior
 
 function gameOverSequence() {
-  async function updateLeaderboard(name) {
-    // update database
-    await postScore(name, score).catch((error) =>
-      console.error("Error:", error)
-    );
-    // update sessionStorage
-    await fetchAndCacheLeaderboard().catch((error) =>
-      console.error("Error:", error)
-    );
-    console.log("leaderboard updated")
-  }
-
   gameOverElement.style.color = gameOverColor;
   dangerLine.style.opacity = "0%";
   document.removeEventListener("click", shootBullet);
-
-  // Allow user to input new score
-  if (score > scoreToBeat && !leaderboardUpdated) {
-    const modal = document.getElementById("name-input-modal");
-    modal.style.display = "block";
-
-    const nameInput = document.getElementById("name-input");
-    nameInput.addEventListener("input", () => {
-      nameInput.value = nameInput.value
-        .replace(/[^a-zA-Z]/g, "")
-        .substring(0, 10);
-    });
-
-    // Handle the keypress event to submit the name when Enter is pressed
-    nameInput.addEventListener("keypress", (event) => {
-      if (event.key === "Enter") {
-        // Disable leaderboard link until leaderboard is updated
-        leaderboardLink.style.pointerEvents = "none";
-        let name = nameInput.value;
-        updateLeaderboard(name)
-          .then(() => {
-            leaderboardLink.style.pointerEvents = "auto";
-          })
-          .catch((error) => console.log(error));
-        leaderboardUpdated = true;
-        modal.style.display = "none";
-        nameInput.value = "";
-      }
-    });
-  }
   return;
 }
 
@@ -235,6 +148,7 @@ function createWord() {
 }
 
 function spawnWord(resolve) {
+  console.log("Spawning word")
   // Check for end of level
   if (currentWordIndex >= poem.length) {
     console.log("End of poem reached");
@@ -247,11 +161,6 @@ function spawnWord(resolve) {
       }
     }, 1000); // checks every second if all words are cleared
     return;
-  }
-
-  // Adjustments for Moloch level
-  if (levelConfig.number == 3) {
-    molochLevelUpdate();
   }
 
   let word = createWord();
@@ -295,9 +204,6 @@ function startWordFall(word, resolve) {
         clearTimeout(wordSpawnTimeout);
         spawnWord(resolve);
 
-        // Update score
-        score = levelConfig.scoreUpdate(score);
-        scoreElement.textContent = `Score: ${score}`;
       }
     });
 
@@ -331,21 +237,11 @@ function startLevel(levelConfig) {
 async function runGame() {
   document.addEventListener("click", shootBullet);
   document.addEventListener("mousemove", rotateGun);
-
-  // Set scoreToBeat from leaderboard
-  let leaderboardData = sessionStorage.getItem("leaderboardData");
-  if (!leaderboardData) {
-    try {
-      leaderboardData = await fetchAndCacheLeaderboard();
-    } catch (error) {
-      console.error("Error: ", error);
-    }
-  }
-  scoreToBeat = leaderboardData[leaderboardData.length - 1].score;
+  console.log("Running game")
 
   for (let cfg of levels) {
     levelConfig = cfg;
-    levelElement.textContent = `Level ${levelConfig.number} of ${levels.length}`;
+    console.log("Starting level")
     await startLevel(levelConfig);
     await delay(3000);
   }
