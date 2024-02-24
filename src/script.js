@@ -9,7 +9,7 @@ const levels = [
 
 // Initial variable settings and DOM elements
 
-let useHandrawn = true;
+let useHandrawn = false;
 
 let gameOver = false;
 let poem = [];
