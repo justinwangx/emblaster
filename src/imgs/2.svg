@@ -1,19 +1,5 @@
-<svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_d_1_233)">
-<path d="M7.71246 6.39264C7.71246 8.85468 8.90866 15.9483 9.50171 13.5588" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M8.37561 2.01732C7.89907 2.01732 6.37788 1.93194 6.18597 2.53948" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M17.6597 5.65442C17.6597 3.91689 13.3851 4.41177 13.3555 6.40864C13.3554 6.41353 27.3969 15.8755 15.2073 13.5588" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<defs>
-<filter id="filter0_d_1_233" x="0.68557" y="0.512978" width="24.9993" height="23.033" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="4"/>
-<feGaussianBlur stdDeviation="2"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_233"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_233" result="shape"/>
-</filter>
-</defs>
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.84698 6.51846C1.84698 9.58111 3.96766 13.8304 2.83216 16.7094" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.93211 2.20378C2.78857 2.19152 1.43614 2.03478 1.57096 1.72437" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.5025 6.3404C12.4663 6.3404 12.4389 5.42402 12.1019 4.66398C10.9293 2.01954 7.66734 5.13461 7.18505 6.69501C5.65279 11.6525 15.6338 11.8967 17.7287 14.861C19.2018 16.9453 15.5836 17.5834 14.3031 17.6092C11.6867 17.662 9.46886 16.7611 7.64855 14.8671" stroke="#1E1E1E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
