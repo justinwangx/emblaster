@@ -9,6 +9,8 @@ const levels = [
 
 // Initial variable settings and DOM elements
 
+let useHandrawn = true;
+
 let gameOver = false;
 let poem = [];
 let currentWordIndex = 0;
@@ -138,12 +140,18 @@ function noWordsLeft() {
 }
 
 function createWord() {
-  // let word = document.createElement("div");
-  // word.textContent = poem[currentWordIndex++];
-  // word.setAttribute("class", "falling-word");
-  let word = document.createElement("img");
-  word.src = `imgs/${currentWordIndex++}.svg`;
-  word.setAttribute("class", "falling-word");
+  let word;
+
+  if (!useHandrawn) {
+    word = document.createElement("div");
+    word.textContent = poem[currentWordIndex++];
+    word.setAttribute("class", "falling-word");
+  }
+  else {
+    word = document.createElement("img");
+    word.src = `imgs/${currentWordIndex++}.svg`;
+    word.setAttribute("class", "falling-word");
+  }
 
   words.appendChild(word);
   word.style.bottom = game.offsetHeight + "px";
@@ -177,8 +185,12 @@ function startWordFall(word, resolve) {
 
   function fallDownWord() {
     if (wordBottom <= gunBottom - 10) {
-      // word.style.color = gameOverColor;
-      word.style.filter = 'sepia(100%) hue-rotate(-50deg) saturate(5000%) brightness(50%)';
+      if (!useHandrawn) {
+        word.style.color = gameOverColor;
+      }
+      else {
+        word.style.filter = 'sepia(100%) hue-rotate(-50deg) saturate(5000%) brightness(50%)';
+      }
       if (!gameOver) {
         gameOverSequence();
       }
