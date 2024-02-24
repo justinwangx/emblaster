@@ -66,8 +66,6 @@ body {
 }
 
 .falling-word {
-  height: 35px;
-  width: 35px;
   position: absolute;
   z-index: 0;
   user-select: none;

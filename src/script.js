@@ -2,7 +2,7 @@ const levels = [
   {
     number: 1,
     poem: "that-love-is-all-there-is.json",
-    spawnRate: 3000,
+    spawnRate: 2500,
     fallSpeedMultiplier: 1,
   },
 ];
@@ -138,9 +138,13 @@ function noWordsLeft() {
 }
 
 function createWord() {
-  let word = document.createElement("div");
-  word.textContent = poem[currentWordIndex++];
+  // let word = document.createElement("div");
+  // word.textContent = poem[currentWordIndex++];
+  // word.setAttribute("class", "falling-word");
+  let word = document.createElement("img");
+  word.src = `imgs/${currentWordIndex++}.svg`;
   word.setAttribute("class", "falling-word");
+
   words.appendChild(word);
   word.style.bottom = game.offsetHeight + "px";
   word.style.left = Math.floor(Math.random() * (game.offsetWidth - 10)) + "px";
@@ -173,7 +177,8 @@ function startWordFall(word, resolve) {
 
   function fallDownWord() {
     if (wordBottom <= gunBottom - 10) {
-      word.style.color = gameOverColor;
+      // word.style.color = gameOverColor;
+      word.style.filter = 'sepia(100%) hue-rotate(-50deg) saturate(5000%) brightness(50%)';
       if (!gameOver) {
         gameOverSequence();
       }
