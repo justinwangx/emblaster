@@ -140,8 +140,8 @@ function noWordsLeft() {
 function createWord() {
   let word;
 
-  word = document.createElement("img");
-  word.src = `imgs/${currentWordIndex++}.svg`;
+  word = document.createElement("div");
+  word.textContent = poem[currentWordIndex++];
   word.setAttribute("class", "falling-word");
 
   words.appendChild(word);
