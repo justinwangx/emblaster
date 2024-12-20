@@ -9,8 +9,6 @@ const levels = [
 
 // Initial variable settings and DOM elements
 
-let useHandrawn = false;
-
 let gameOver = false;
 let poem = [];
 let currentWordIndex = 0;
@@ -142,25 +140,22 @@ function noWordsLeft() {
 function createWord() {
   let word;
 
-  if (!useHandrawn) {
-    word = document.createElement("div");
-    word.textContent = poem[currentWordIndex++];
-    word.setAttribute("class", "falling-word");
-  }
-  else {
-    word = document.createElement("img");
-    word.src = `imgs/${currentWordIndex++}.svg`;
-    word.setAttribute("class", "falling-word");
-  }
+  word = document.createElement("div");
+  word.textContent = poem[currentWordIndex++];
+  word.setAttribute("class", "falling-word");
 
   words.appendChild(word);
   word.style.bottom = game.offsetHeight + "px";
-  word.style.left = Math.floor(Math.random() * (game.offsetWidth - 10)) + "px";
+
+  const wordWidth = word.offsetWidth || 100;
+  const maxLeft = Math.max(0, game.offsetWidth - wordWidth);
+  word.style.left = Math.floor(Math.random() * maxLeft) + "px";
+
   return word;
 }
 
 function spawnWord(resolve) {
-  console.log("Spawning word")
+  console.log("Spawning word");
   // Check for end of level
   if (currentWordIndex >= poem.length) {
     console.log("End of poem reached");
@@ -177,7 +172,10 @@ function spawnWord(resolve) {
 
   let word = createWord();
   startWordFall(word, resolve);
-  wordSpawnTimeout = setTimeout(() => spawnWord(resolve), levelConfig.spawnRate);
+  wordSpawnTimeout = setTimeout(
+    () => spawnWord(resolve),
+    levelConfig.spawnRate
+  );
 }
 
 function startWordFall(word, resolve) {
@@ -185,12 +183,7 @@ function startWordFall(word, resolve) {
 
   function fallDownWord() {
     if (wordBottom <= gunBottom - 10) {
-      if (!useHandrawn) {
-        word.style.color = gameOverColor;
-      }
-      else {
-        word.style.filter = 'sepia(100%) hue-rotate(-50deg) saturate(5000%) brightness(50%)';
-      }
+      word.style.color = gameOverColor;
       if (!gameOver) {
         gameOverSequence();
       }
@@ -220,7 +213,6 @@ function startWordFall(word, resolve) {
         clearInterval(wordFallInterval);
         clearTimeout(wordSpawnTimeout);
         spawnWord(resolve);
-
       }
     });
 
@@ -267,7 +259,9 @@ async function runGame() {
     currentWordIndex = 0;
     bullets = [];
     // Clear any words that are still falling
-    document.querySelectorAll('.falling-word').forEach(element => element.remove());
+    document
+      .querySelectorAll(".falling-word")
+      .forEach((element) => element.remove());
 
     await startLevel(levelConfig).catch((error) => {
       console.error("Failed to start level:", error);
