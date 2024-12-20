@@ -11,6 +11,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  position: fixed;
 }
 
 #score {
@@ -32,6 +34,7 @@ body {
   max-width: 1200px;
   position: relative;
   z-index: -2;
+  overflow: hidden;
 }
 
 #gun {
